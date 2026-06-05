@@ -1,101 +1,69 @@
 # Máquina de Estados
 
-## Flujo de Reserva de Turnos
+## ESTADO_MENU
 
-### ESTADO_MENU
+El chatbot muestra las opciones principales disponibles:
 
-Muestra las opciones principales del sistema:
-
-* Reservar turno
-* Consultar turno
-* Cancelar turno
-* Salir
+* Reservar turno.
+* Consultar turno.
+* Cancelar turno.
+* Salir.
 
 ---
 
-### ESTADO_PEDIR_DNI
+## ESTADO_IDENTIFICAR_PACIENTE
 
-Solicita al usuario su número de DNI.
+El chatbot solicita el DNI del paciente y verifica si se encuentra registrado.
 
----
-
-### ESTADO_VERIFICAR_PACIENTE
-
-Verifica si el DNI se encuentra registrado.
-
-#### Transiciones
-
-* Si existe → ESTADO_PEDIR_FECHA
-* Si no existe → ESTADO_REGISTRAR_NOMBRE
+Si el DNI no corresponde a un paciente registrado, se deriva al estado de registro de paciente.
 
 ---
 
-### ESTADO_REGISTRAR_NOMBRE
+## ESTADO_REGISTRAR_PACIENTE
 
-Solicita el nombre del paciente.
+El chatbot solicita los datos necesarios para registrar un nuevo paciente:
 
----
+* DNI.
+* Nombre.
+* Apellido.
+* Teléfono.
 
-### ESTADO_REGISTRAR_APELLIDO
-
-Solicita el apellido del paciente.
-
----
-
-### ESTADO_REGISTRAR_TELEFONO
-
-Solicita el teléfono del paciente.
+Una vez registrado, el paciente puede continuar con la reserva del turno.
 
 ---
 
-### ESTADO_GUARDAR_PACIENTE
+## ESTADO_SELECCIONAR_TURNO
 
-Registra el nuevo paciente en `pacientes.csv`.
+El chatbot muestra las fechas y horarios disponibles.
 
-#### Transiciones
-
-* Continuar → ESTADO_PEDIR_FECHA
+El paciente selecciona un turno dentro de los próximos 5 días hábiles, en el horario de atención del consultorio.
 
 ---
 
-### ESTADO_PEDIR_FECHA
+## ESTADO_CONFIRMAR_RESERVA
 
-Muestra los próximos 5 días hábiles disponibles para la reserva.
-
----
-
-### ESTADO_MOSTRAR_HORARIOS
-
-Muestra los horarios disponibles para la fecha seleccionada.
-
-Horarios:
-
-* 09:00
-* 09:30
-* 10:00
-* 10:30
-* 11:00
-* 11:30
+El chatbot muestra un resumen del turno seleccionado y solicita confirmación al paciente.
 
 ---
 
-### ESTADO_CONFIRMAR_RESERVA
+## ESTADO_REGISTRAR_TURNO
 
-Muestra el resumen del turno y solicita confirmación.
-
-#### Transiciones
-
-* Confirmar → ESTADO_GUARDAR_TURNO
-* Cancelar → ESTADO_FIN
+El chatbot registra la reserva confirmada en el sistema.
 
 ---
 
-### ESTADO_GUARDAR_TURNO
+## ESTADO_CONSULTAR_TURNO
 
-Registra el turno en `turnos.csv`.
+El chatbot permite consultar los turnos asociados a un DNI.
 
 ---
 
-### ESTADO_FIN
+## ESTADO_CANCELAR_TURNO
 
-Finaliza la operación actual.
+El chatbot permite cancelar un turno asociado a un DNI.
+
+---
+
+## ESTADO_FIN
+
+El chatbot finaliza la operación actual.

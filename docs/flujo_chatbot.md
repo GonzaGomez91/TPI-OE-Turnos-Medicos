@@ -2,118 +2,115 @@
 
 ## Flujo Principal: Reserva de Turno
 
-### 1. Inicio del proceso
+### 1. Inicio
 
 El paciente inicia la interacción con el chatbot.
 
-El sistema muestra un mensaje de bienvenida y presenta el menú principal.
+El chatbot muestra un mensaje de bienvenida y presenta el menú principal.
 
 Opciones disponibles:
 
-- Reservar turno
-- Consultar turno
-- Cancelar turno
-- Salir
+* Reservar turno.
+* Consultar turno.
+* Cancelar turno.
+* Salir.
 
 ---
 
-### 2. Selección de opción
+### 2. Identificación del Paciente
 
 El paciente selecciona la opción **Reservar turno**.
 
-Si el paciente ingresa una opción inválida, el sistema informa el error y vuelve a mostrar el menú principal.
+El chatbot solicita el DNI del paciente y verifica si se encuentra registrado.
 
 ---
 
-### 3. Solicitud de DNI
+### 3. Registro de Paciente
 
-El sistema solicita al paciente que ingrese su DNI.
-
-El paciente ingresa su número de DNI.
-
-El sistema valida que el DNI:
-
-- No esté vacío.
-- Contenga únicamente números.
-
-Si el DNI es inválido, el sistema solicita ingresarlo nuevamente.
-
----
-
-### 4. Verificación del paciente
-
-El sistema consulta el archivo `pacientes.csv` para verificar si el DNI ingresado corresponde a un paciente registrado.
-
-#### Si el paciente está registrado
-
-El sistema continúa con el proceso de reserva de turno.
-
-#### Si el paciente no está registrado
-
-El sistema ofrece registrar un nuevo paciente.
+Si el paciente no se encuentra registrado, el chatbot ofrece realizar el registro.
 
 Para registrar al paciente, solicita:
 
-- Nombre y apellido.
-- Teléfono.
+* DNI.
+* Nombre.
+* Apellido.
+* Teléfono.
 
-Luego guarda los datos en `pacientes.csv` y continúa con el proceso de reserva.
-
----
-
-### 5. Selección de fecha
-
-El sistema solicita al paciente que ingrese una fecha para el turno.
-
-La fecha debe corresponder a un día hábil, de lunes a viernes.
-
-Si la fecha ingresada no es válida, el sistema solicita ingresar una nueva fecha.
+Luego, el paciente continúa con el proceso de reserva.
 
 ---
 
-### 6. Selección de horario
+### 4. Selección del Turno
 
-El sistema muestra los horarios disponibles para la fecha seleccionada.
+El chatbot muestra los próximos 5 días hábiles disponibles.
+
+Luego muestra los horarios disponibles para la fecha seleccionada.
 
 Horarios posibles:
 
-- 09:00
-- 09:30
-- 10:00
-- 10:30
-- 11:00
-- 11:30
+* 09:00.
+* 09:30.
+* 10:00.
+* 10:30.
+* 11:00.
+* 11:30.
 
-El paciente selecciona un horario.
-
-Si el horario seleccionado no está disponible, el sistema informa la situación y permite seleccionar otro horario.
+El paciente selecciona el turno deseado.
 
 ---
 
-### 7. Confirmación de reserva
+### 5. Confirmación de Reserva
 
-El sistema muestra un resumen del turno:
+El chatbot muestra un resumen del turno seleccionado:
 
-- Nombre del paciente.
-- Fecha.
-- Hora.
+* Paciente.
+* Fecha.
+* Hora.
 
-Luego solicita confirmación.
-
-#### Si el paciente confirma
-
-El sistema registra el turno en `turnos.csv`.
-
-#### Si el paciente no confirma
-
-El sistema cancela la operación y no registra el turno.
+El paciente debe confirmar la reserva.
 
 ---
 
-### 8. Fin del proceso
+### 6. Registro del Turno
 
-El sistema informa el resultado de la operación.
+Si el paciente confirma la reserva, el chatbot registra el turno.
 
-Si la reserva fue confirmada, muestra un mensaje de éxito.
+Si el paciente no confirma, la operación se cancela y no se registra ningún turno.
 
-Si la operación fue cancelada, informa que no se realizó ninguna reserva.
+---
+
+### 7. Fin
+
+El chatbot informa el resultado de la operación y finaliza el proceso.
+
+---
+
+## Flujo Secundario: Consulta de Turno
+
+El paciente selecciona la opción **Consultar turno**.
+
+El chatbot solicita el DNI.
+
+El sistema busca los turnos asociados a ese DNI.
+
+Si existen turnos, los muestra al paciente.
+
+Si no existen turnos, informa que no hay reservas registradas.
+
+---
+
+## Flujo Secundario: Cancelación de Turno
+
+El paciente selecciona la opción **Cancelar turno**.
+
+El chatbot solicita el DNI.
+
+El sistema busca los turnos asociados a ese DNI.
+
+Si existen turnos, el paciente selecciona cuál desea cancelar.
+
+El chatbot solicita confirmación.
+
+Si el paciente confirma, el turno se cancela.
+
+Si el paciente no confirma, no se realiza ninguna modificación.
