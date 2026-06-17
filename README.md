@@ -93,7 +93,7 @@ El objetivo principal del proyecto es modelar y automatizar el proceso administr
 * El DNI debe contener únicamente caracteres numéricos.
 * Si el paciente no se encuentra registrado, deberá registrarse antes de reservar un turno.
 * No podrán existir dos pacientes registrados con el mismo DNI.
-* Los turnos solo podrán asignarse de lunes a viernes.
+* Los turnos solo podrán asignarse en las fechas ofrecidas por el sistema.
 * Los turnos tendrán una duración de 30 minutos.
 * Los horarios disponibles serán:
 

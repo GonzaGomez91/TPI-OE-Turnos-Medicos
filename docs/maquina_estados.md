@@ -1,69 +1,87 @@
 # Máquina de Estados
 
-## ESTADO_MENU
+La lógica conversacional del chatbot se implementa mediante una máquina de estados finitos. Cada estado representa una etapa específica del proceso de reserva de turnos.
 
-El chatbot muestra las opciones principales disponibles:
+---
+
+## MENU
+
+Estado inicial del sistema.
+
+El chatbot muestra las opciones disponibles:
 
 * Reservar turno.
-* Consultar turno.
-* Cancelar turno.
 * Salir.
 
 ---
 
-## ESTADO_IDENTIFICAR_PACIENTE
+## ESPERANDO_OPCION
 
-El chatbot solicita el DNI del paciente y verifica si se encuentra registrado.
+El chatbot espera que el usuario seleccione una opción del menú principal.
 
-Si el DNI no corresponde a un paciente registrado, se deriva al estado de registro de paciente.
+Según la opción elegida, el flujo continúa hacia el proceso de reserva o finaliza la conversación.
 
 ---
 
-## ESTADO_REGISTRAR_PACIENTE
+## ESPERANDO_DNI
+
+El chatbot solicita el DNI del paciente.
+
+Si el paciente ya se encuentra registrado, continúa con la selección de fecha.
+
+Si el paciente no existe en el sistema, pasa al estado de registro de paciente.
+
+---
+
+## REGISTRANDO_PACIENTE
 
 El chatbot solicita los datos necesarios para registrar un nuevo paciente:
 
-* DNI.
 * Nombre.
 * Apellido.
 * Teléfono.
 
-Una vez registrado, el paciente puede continuar con la reserva del turno.
+Una vez completado el registro, el proceso continúa con la selección de fecha.
 
 ---
 
-## ESTADO_SELECCIONAR_TURNO
+## SELECCIONANDO_FECHA
 
-El chatbot muestra las fechas y horarios disponibles.
+El chatbot muestra las fechas disponibles para la reserva de turnos.
 
-El paciente selecciona un turno dentro de los próximos 5 días hábiles, en el horario de atención del consultorio.
-
----
-
-## ESTADO_CONFIRMAR_RESERVA
-
-El chatbot muestra un resumen del turno seleccionado y solicita confirmación al paciente.
+El paciente selecciona una de las opciones ofrecidas.
 
 ---
 
-## ESTADO_REGISTRAR_TURNO
+## SELECCIONANDO_HORARIO
 
-El chatbot registra la reserva confirmada en el sistema.
+El chatbot muestra los horarios disponibles para la fecha seleccionada.
 
----
-
-## ESTADO_CONSULTAR_TURNO
-
-El chatbot permite consultar los turnos asociados a un DNI.
+El paciente selecciona el horario deseado.
 
 ---
 
-## ESTADO_CANCELAR_TURNO
+## CONFIRMANDO_RESERVA
 
-El chatbot permite cancelar un turno asociado a un DNI.
+El chatbot presenta un resumen de la reserva:
+
+* Paciente.
+* DNI.
+* Fecha.
+* Horario.
+
+El paciente debe confirmar o cancelar la operación.
 
 ---
 
-## ESTADO_FIN
+## REGISTRANDO_TURNO
 
-El chatbot finaliza la operación actual.
+El chatbot verifica nuevamente la disponibilidad del turno seleccionado y registra la reserva en el sistema.
+
+Esta validación evita inconsistencias en caso de que otro usuario haya reservado el mismo turno durante el proceso.
+
+---
+
+## FIN
+
+Estado utilizado para finalizar la conversación cuando el usuario selecciona la opción de salida.

@@ -34,7 +34,7 @@ El sistema debe verificar si el paciente se encuentra registrado.
 
 ### RN-04
 
-Si el paciente no se encuentra registrado, el chatbot deberá ofrecer la posibilidad de registrarlo.
+Si el paciente no se encuentra registrado, el chatbot deberá permitir su registro.
 
 ### RN-05
 
@@ -58,92 +58,62 @@ Solo los pacientes registrados podrán reservar turnos.
 
 ### RN-08
 
-Los turnos solo podrán asignarse de lunes a viernes.
+Los turnos solo podrán asignarse en las fechas ofrecidas por el sistema.
 
 ### RN-09
 
-Los turnos solo podrán asignarse dentro del horario de atención definido por el consultorio.
+Los turnos solo podrán asignarse dentro de los horarios disponibles definidos por el sistema.
 
 ### RN-10
 
-La duración de cada turno será de 30 minutos.
+No podrán existir dos turnos reservados para la misma fecha y horario.
 
 ### RN-11
 
-Los horarios disponibles serán:
-
-* 09:00
-* 09:30
-* 10:00
-* 10:30
-* 11:00
-* 11:30
+El usuario deberá confirmar la reserva antes de que el turno sea registrado.
 
 ### RN-12
 
-No podrán existir dos turnos reservados para la misma fecha y horario.
-
-### RN-13
-
-El usuario deberá confirmar la reserva antes de que el turno sea registrado.
-
-### RN-14
-
-Si el horario seleccionado no se encuentra disponible, el sistema deberá informar la situación y permitir seleccionar otro horario.
-
----
-
-## Consulta de Turnos
-
-### RN-15
-
-Un paciente podrá consultar sus turnos utilizando su DNI.
-
----
-
-## Cancelación de Turnos
-
-### RN-16
-
-Un paciente podrá cancelar un turno previamente reservado.
-
-### RN-17
-
-Solo podrán cancelarse turnos asociados al DNI ingresado.
+Si el turno seleccionado deja de estar disponible durante el proceso de reserva, el sistema deberá informar la situación y permitir seleccionar otro turno.
 
 ---
 
 ## Validaciones y Manejo de Errores
 
-### RN-18
+### RN-13
 
 Si el usuario ingresa una opción inválida en el menú, el sistema deberá solicitar una nueva selección.
 
-### RN-19
+### RN-14
 
 Si el usuario ingresa datos vacíos, el sistema deberá solicitar nuevamente la información.
 
-### RN-20
+### RN-15
 
 Si el usuario ingresa un DNI inválido, el sistema deberá informar el error y solicitar un nuevo ingreso.
 
-### RN-21
+### RN-16
 
 Si el usuario decide no confirmar una reserva, el turno no deberá registrarse.
+
+### RN-17
+
+El usuario podrá cancelar la operación actual en cualquier momento mediante el comando:
+
+```text
+cancelar
+```
+
+En dicho caso, el sistema deberá regresar al menú principal sin registrar modificaciones.
 
 ---
 
 ## Persistencia de Datos
 
-### RN-22
+### RN-18
 
 Todo paciente registrado deberá almacenarse en el archivo `pacientes.csv`.
 
-### RN-23
+### RN-19
 
 Toda reserva confirmada deberá almacenarse en el archivo `turnos.csv`.
-
-### RN-24
-
-Toda cancelación deberá actualizar la información almacenada en `turnos.csv`.
-
