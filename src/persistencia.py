@@ -1,16 +1,11 @@
 import csv
 import os
 
-# Rutas de los archivos CSV
 RUTA_PACIENTES = "data/pacientes.csv"
 RUTA_TURNOS = "data/turnos.csv"
 
 
 def leer_csv(ruta):
-    """
-    Lee un archivo CSV y devuelve una lista de diccionarios.
-    Si el archivo no existe, devuelve una lista vacía.
-    """
     if not os.path.exists(ruta):
         return []
 
@@ -20,9 +15,6 @@ def leer_csv(ruta):
 
 
 def escribir_csv(ruta, campos, datos):
-    """
-    Escribe una lista de diccionarios en un archivo CSV.
-    """
     with open(ruta, mode="w", encoding="utf-8", newline="") as archivo:
         escritor = csv.DictWriter(archivo, fieldnames=campos)
         escritor.writeheader()
@@ -30,11 +22,6 @@ def escribir_csv(ruta, campos, datos):
 
 
 def buscar_paciente_por_dni(dni):
-    """
-    Busca un paciente por DNI.
-    Si lo encuentra, devuelve el diccionario del paciente.
-    Si no lo encuentra, devuelve None.
-    """
     pacientes = leer_csv(RUTA_PACIENTES)
 
     for paciente in pacientes:
@@ -45,9 +32,6 @@ def buscar_paciente_por_dni(dni):
 
 
 def guardar_paciente(dni, nombre, apellido, telefono):
-    """
-    Guarda un nuevo paciente en pacientes.csv.
-    """
     pacientes = leer_csv(RUTA_PACIENTES)
 
     nuevo_paciente = {
@@ -64,16 +48,24 @@ def guardar_paciente(dni, nombre, apellido, telefono):
 
 
 def obtener_turnos():
-    """
-    Devuelve todos los turnos registrados.
-    """
     return leer_csv(RUTA_TURNOS)
 
 
+def turno_esta_disponible(fecha, horario):
+    turnos = leer_csv(RUTA_TURNOS)
+
+    for turno in turnos:
+        if (
+            turno["fecha"] == fecha
+            and turno["horario"] == horario
+            and turno["estado"] == "Reservado"
+        ):
+            return False
+
+    return True
+
+
 def guardar_turno(id_turno, dni, fecha, horario, estado="Reservado"):
-    """
-    Guarda un nuevo turno en turnos.csv.
-    """
     turnos = leer_csv(RUTA_TURNOS)
 
     nuevo_turno = {
@@ -91,9 +83,6 @@ def guardar_turno(id_turno, dni, fecha, horario, estado="Reservado"):
 
 
 def generar_id_turno():
-    """
-    Genera un ID simple para el próximo turno.
-    """
     turnos = leer_csv(RUTA_TURNOS)
 
     if not turnos:

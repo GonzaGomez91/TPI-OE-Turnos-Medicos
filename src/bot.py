@@ -14,7 +14,8 @@ from persistencia import (
     buscar_paciente_por_dni,
     guardar_paciente,
     guardar_turno,
-    generar_id_turno
+    generar_id_turno,
+    turno_esta_disponible
 )
 
 
@@ -38,9 +39,6 @@ FECHAS_DISPONIBLES = [
 
 
 def crear_sesion():
-    """
-    Crea la memoria inicial del chatbot.
-    """
     return {
         "estado": MENU,
         "dni": "",
@@ -63,16 +61,61 @@ def mostrar_menu():
     )
 
 
-def procesar_mensaje(mensaje, sesion):
-    """
-    Procesa el mensaje del usuario según el estado actual de la conversación.
-    Devuelve la respuesta del chatbot.
-    """
+def obtener_horarios_disponibles(fecha):
+    horarios_libres = []
 
+    for horario in HORARIOS_DISPONIBLES:
+        if turno_esta_disponible(fecha, horario):
+            horarios_libres.append(horario)
+
+    return horarios_libres
+
+
+def obtener_fechas_disponibles():
+    fechas_libres = []
+
+    for fecha in FECHAS_DISPONIBLES:
+        horarios_libres = obtener_horarios_disponibles(fecha)
+
+        if len(horarios_libres) > 0:
+            fechas_libres.append(fecha)
+
+    return fechas_libres
+
+
+def mostrar_fechas():
+    fechas_libres = obtener_fechas_disponibles()
+
+    if len(fechas_libres) == 0:
+        return "No hay fechas disponibles para reservar turnos."
+
+    texto = "Seleccione una fecha disponible:\n"
+
+    for i, fecha in enumerate(fechas_libres, start=1):
+        texto += f"{i}. {fecha}\n"
+
+    return texto
+
+
+def mostrar_horarios(fecha):
+    horarios_libres = obtener_horarios_disponibles(fecha)
+
+    if len(horarios_libres) == 0:
+        return "No hay horarios disponibles para esa fecha. Seleccione otra fecha."
+
+    texto = "Seleccione un horario disponible:\n"
+
+    for i, horario in enumerate(horarios_libres, start=1):
+        texto += f"{i}. {horario}\n"
+
+    return texto
+
+
+def procesar_mensaje(mensaje, sesion):
     mensaje = mensaje.strip()
 
     if mensaje.lower() == "cancelar":
-        sesion["estado"] = MENU
+        sesion["estado"] = ESPERANDO_OPCION
         return "Operación cancelada.\n\n" + mostrar_menu()
 
     if sesion["estado"] == MENU:
@@ -111,9 +154,12 @@ def procesar_mensaje(mensaje, sesion):
             sesion["estado"] = SELECCIONANDO_FECHA
             return mostrar_fechas()
 
-        else:
-            sesion["estado"] = REGISTRANDO_PACIENTE
-            return "Paciente no registrado. Ingrese nombre, apellido y teléfono separados por coma.\nEjemplo: Juan,Perez,1122334455"
+        sesion["estado"] = REGISTRANDO_PACIENTE
+        return (
+            "Paciente no registrado.\n"
+            "Ingrese nombre, apellido y teléfono separados por coma.\n"
+            "Ejemplo: Juan,Perez,1122334455"
+        )
 
     if sesion["estado"] == REGISTRANDO_PACIENTE:
         datos = mensaje.split(",")
@@ -146,28 +192,40 @@ def procesar_mensaje(mensaje, sesion):
         return "Paciente registrado correctamente.\n\n" + mostrar_fechas()
 
     if sesion["estado"] == SELECCIONANDO_FECHA:
+        fechas_libres = obtener_fechas_disponibles()
+
+        if len(fechas_libres) == 0:
+            sesion["estado"] = MENU
+            return "No hay fechas disponibles.\n\n" + mostrar_menu()
+
         if not mensaje.isdigit():
             return "Opción inválida. Seleccione una fecha por número."
 
         opcion = int(mensaje)
 
-        if opcion < 1 or opcion > len(FECHAS_DISPONIBLES):
+        if opcion < 1 or opcion > len(fechas_libres):
             return "Opción inválida. Seleccione una fecha disponible."
 
-        sesion["fecha"] = FECHAS_DISPONIBLES[opcion - 1]
+        sesion["fecha"] = fechas_libres[opcion - 1]
         sesion["estado"] = SELECCIONANDO_HORARIO
-        return mostrar_horarios()
+        return mostrar_horarios(sesion["fecha"])
 
     if sesion["estado"] == SELECCIONANDO_HORARIO:
+        horarios_libres = obtener_horarios_disponibles(sesion["fecha"])
+
+        if len(horarios_libres) == 0:
+            sesion["estado"] = SELECCIONANDO_FECHA
+            return "No hay horarios disponibles para esa fecha.\n\n" + mostrar_fechas()
+
         if not mensaje.isdigit():
             return "Opción inválida. Seleccione un horario por número."
 
         opcion = int(mensaje)
 
-        if opcion < 1 or opcion > len(HORARIOS_DISPONIBLES):
+        if opcion < 1 or opcion > len(horarios_libres):
             return "Opción inválida. Seleccione un horario disponible."
 
-        sesion["horario"] = HORARIOS_DISPONIBLES[opcion - 1]
+        sesion["horario"] = horarios_libres[opcion - 1]
         sesion["estado"] = CONFIRMANDO_RESERVA
 
         return (
@@ -184,12 +242,11 @@ def procesar_mensaje(mensaje, sesion):
             sesion["estado"] = REGISTRANDO_TURNO
             return registrar_turno(sesion)
 
-        elif mensaje.lower() == "no":
-            sesion["estado"] = MENU
+        if mensaje.lower() == "no":
+            sesion["estado"] = ESPERANDO_OPCION
             return "Reserva cancelada.\n\n" + mostrar_menu()
 
-        else:
-            return "Respuesta inválida. Responda SI o NO."
+        return "Respuesta inválida. Responda SI o NO."
 
     if sesion["estado"] == FIN:
         return "La conversación ha finalizado."
@@ -197,25 +254,15 @@ def procesar_mensaje(mensaje, sesion):
     return "Estado no reconocido."
 
 
-def mostrar_fechas():
-    texto = "Seleccione una fecha disponible:\n"
-
-    for i, fecha in enumerate(FECHAS_DISPONIBLES, start=1):
-        texto += f"{i}. {fecha}\n"
-
-    return texto
-
-
-def mostrar_horarios():
-    texto = "Seleccione un horario disponible:\n"
-
-    for i, horario in enumerate(HORARIOS_DISPONIBLES, start=1):
-        texto += f"{i}. {horario}\n"
-
-    return texto
-
-
 def registrar_turno(sesion):
+    if not turno_esta_disponible(sesion["fecha"], sesion["horario"]):
+        sesion["estado"] = SELECCIONANDO_FECHA
+        return (
+            "El turno seleccionado ya no está disponible.\n"
+            "Por favor seleccione otra fecha u horario.\n\n"
+            + mostrar_fechas()
+        )
+
     id_turno = generar_id_turno()
 
     guardar_turno(
