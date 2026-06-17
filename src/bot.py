@@ -273,7 +273,7 @@ def registrar_turno(sesion):
         "Reservado"
     )
 
-    sesion["estado"] = MENU
+    sesion["estado"] = ESPERANDO_OPCION
 
     return (
         "Turno registrado correctamente.\n\n"
