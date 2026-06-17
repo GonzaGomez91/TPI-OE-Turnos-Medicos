@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot de Turnos Médicos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="chat-container">
+        <header class="chat-header">
+            <h1>Chatbot de Turnos Médicos</h1>
+            <p>Simulación de reserva de turnos</p>
+        </header>
+
+        <section id="chat-box" class="chat-box"></section>
+
+        <form id="chat-form" class="chat-form">
+            <input 
+                type="text" 
+                id="mensaje" 
+                placeholder="Escribí tu mensaje..." 
+                autocomplete="off"
+                required
+            >
+            <button type="submit">Enviar</button>
+        </form>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
